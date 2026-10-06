@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Un mago adivina las cartas</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <main class="app-shell">
+
+    <header class="topbar">
+      <div class="title-block">
+        <p class="eyebrow">Juego de lógica matemática</p>
+        <h1>Un mago adivina las cartas</h1>
+      </div>
+
+      <div id="gameStats" class="stats hidden">
+        <div class="stat">
+          <span>Carta</span>
+          <strong id="progress">1 / 40</strong>
+        </div>
+
+        <div class="stat">
+          <span>Puntaje</span>
+          <strong id="score">0</strong>
+        </div>
+
+        <div class="stat timer-stat">
+          <span>Tiempo</span>
+          <strong id="timer">00:00</strong>
+        </div>
+      </div>
+    </header>
+
+
+    <!-- MAGO DECORATIVO -->
+
+    <img
+      src="assets/wizard.png"
+      alt="Mago"
+      class="wizard-image"
+    >
+
+    <div class="wizard-credit">
+      Este juego fue inspirado en el libro
+      <em>¿Cómo, esto también es matemática?</em>,
+      de Adrián Paenza.
+      <a
+        href="https://cms.dm.uba.ar/material/paenza/libro6/ComoEstoTambienEsMatematica.pdf"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Ver libro
+      </a>
+    </div>
+
+
+    <!-- PANTALLA INICIAL -->
+
+    <section id="startScreen" class="start-screen">
+      <div class="start-card">
+
+        <p class="start-kicker">✦ IDENTIFICACIÓN DEL JUGADOR ✦</p>
+
+        <h2>¿Quién se atreve a desafiar al mago?</h2>
+
+        <p class="start-description">
+          Ingresá tu nombre o alias. Tu puntaje y tu tiempo quedarán
+          registrados en el ranking.
+        </p>
+
+        <div class="player-input-wrapper">
+          <input
+            id="playerName"
+            class="player-input"
+            type="text"
+            maxlength="20"
+            autocomplete="off"
+            placeholder="Nombre o alias"
+            aria-label="Nombre o alias del jugador"
+          >
+
+          <button
+            id="startButton"
+            class="start-button"
+            type="button"
+          >
+            Comenzar partida
+          </button>
+        </div>
+
+        <p id="nameError" class="name-error hidden">
+          Ingresá un nombre o alias para comenzar.
+        </p>
+
+      </div>
+    </section>
+
+
+    <!-- JUEGO -->
+
+    <section class="game-card hidden">
+
+      <div class="card-zone">
+
+        <div class="playing-card-wrap">
+          <img
+            id="cardImage"
+            class="playing-card"
+            src="assets/cards/card_back.svg"
+            alt="Carta tapada"
+          >
+        </div>
+
+        <div class="result-panel">
+          <p class="result-label">Resultado</p>
+          <p id="resultValue" class="result-value">R = --</p>
+          <p class="question">¿Qué carta está tapada?</p>
+        </div>
+
+      </div>
+
+      <div id="answers" class="answers"></div>
+
+      <div
+        id="feedback"
+        class="feedback hidden"
+        role="status"
+      ></div>
+
+      <button
+        id="nextButton"
+        class="next-button hidden"
+        type="button"
+      >
+        Siguiente carta
+      </button>
+
+    </section>
+
+
+    <!-- INSTRUCCIONES -->
+
+    <section class="instructions hidden">
+      <details>
+        <summary>¿Cómo se juega?</summary>
+        <p>
+          Observá el valor de <strong>R</strong> y elegí cuál de las cuatro cartas
+          corresponde. Después de responder se revelará la carta correcta.
+        </p>
+      </details>
+    </section>
+
+
+    <!-- PANTALLA FINAL + RANKING -->
+
+    <section id="endScreen" class="end-screen hidden">
+
+      <p class="eyebrow">Partida terminada</p>
+
+      <h2>Completaste las 40 cartas</h2>
+
+      <p id="finalScore" class="final-score"></p>
+
+
+      <div class="ranking-panel">
+
+        <div class="ranking-header">
+          <span>✦</span>
+          <h3>Ranking de jugadores</h3>
+          <span>✦</span>
+        </div>
+
+        <p id="rankingStatus" class="ranking-status">
+          Cargando ranking...
+        </p>
+
+        <ol id="rankingList" class="ranking-list"></ol>
+
+      </div>
+
+      <button
+        id="restartButton"
+        class="next-button"
+        type="button"
+      >
+        Jugar de nuevo
+      </button>
+
+    </section>
+
+  </main>
+
+  <script type="module" src="script.js"></script>
+
+</body>
+</html>
