@@ -4,17 +4,15 @@ import {
   getFirestore,
   collection,
   addDoc,
-  getDocs
+  getDocs,
+  doc,
+  updateDoc,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
 
 /* ==========================================================
    FIREBASE
-
-   IMPORTANTE:
-   Reemplazá este bloque por el firebaseConfig REAL de tu
-   proyecto, es decir, el mismo que ya usás en tu versión
-   que guarda jugadores correctamente en Firestore.
    ========================================================== */
 
 const firebaseConfig = {
@@ -173,6 +171,7 @@ let playerName = "";
 
 let seconds = 0;
 let timerInterval = null;
+let currentGameDocId = null;
 
 
 /* ==========================================================
@@ -182,33 +181,37 @@ let timerInterval = null;
 async function saveScore() {
 
   const percentage =
-    Math.round((score / deck.length) * 100);
+    Math.round(
+      (score / deck.length) * 100
+    );
+
+  if (!currentGameDocId) {
+
+    return false;
+  }
 
   try {
 
-    await addDoc(
-      collection(db, "ranking"),
+    await updateDoc(
+      doc(
+        db,
+        "ranking",
+        currentGameDocId
+      ),
       {
-        name: playerName,
         score: score,
         percentage: percentage,
-        time: seconds
-      }
-    );
+        time: seconds,
 
-    console.log(
-      "Puntaje guardado correctamente"
+        finishedAt: serverTimestamp(),
+
+        status: "completed"
+      }
     );
 
     return true;
 
   } catch (error) {
-
-    console.error(
-      "Error al guardar el puntaje:",
-      error
-    );
-
     return false;
   }
 }
@@ -326,8 +329,6 @@ async function loadRanking() {
       .slice(0, 10);
 
 
-    rankingList.innerHTML = "";
-
     if (ranking.length === 0) {
 
       rankingStatus.textContent =
@@ -422,12 +423,6 @@ async function loadRanking() {
     );
 
   } catch (error) {
-
-    console.error(
-      "Error al cargar ranking:",
-      error
-    );
-
     rankingStatus.textContent =
       "No se pudo cargar el ranking.";
   }
@@ -1155,6 +1150,8 @@ async function showEndScreen() {
 
   stopTimer();
 
+  feedback.classList.add("hidden");
+
   document
     .querySelector(".game-card")
     .classList.add("hidden");
@@ -1210,13 +1207,7 @@ async function showEndScreen() {
 
     successSound
       .play()
-      .catch(error => {
-
-        console.error(
-          "No se pudo reproducir success.mp3:",
-          error
-        );
-      });
+      .catch(() => {});
 
   } else {
 
@@ -1224,13 +1215,7 @@ async function showEndScreen() {
 
     failureSound
       .play()
-      .catch(error => {
-
-        console.error(
-          "No se pudo reproducir failure.mp3:",
-          error
-        );
-      });
+      .catch(() => {});
   }
 
 
@@ -1246,7 +1231,47 @@ async function showEndScreen() {
    INICIAR / REINICIAR PARTIDA
    ========================================================== */
 
-function restartGame() {
+
+
+
+
+async function createGameSession() {
+
+  currentGameDocId = null;
+
+  try {
+
+    const docRef = await addDoc(
+      collection(db, "ranking"),
+      {
+        name: playerName,
+        startedAt: serverTimestamp(),
+        status: "in_progress"
+      }
+    );
+
+    currentGameDocId = docRef.id;
+
+    return true;
+
+  } catch (error) {
+    return false;
+  }
+}
+
+
+async function restartGame() {
+
+  if (!playerName) {
+    return;
+  }
+
+  const sessionCreated =
+    await createGameSession();
+
+  if (!sessionCreated) {
+    return;
+  }
 
   deck =
     shuffle(
@@ -1312,7 +1337,7 @@ restartButton.addEventListener(
 
 startButton.addEventListener(
   "click",
-  () => {
+  async () => {
 
     const name =
       playerNameInput
@@ -1336,7 +1361,7 @@ startButton.addEventListener(
 
     playerName = name;
 
-    restartGame();
+    await restartGame();
   }
 );
 

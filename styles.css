@@ -45,9 +45,38 @@ button {
 }
 
 .app-shell {
-  width: min(1100px, calc(100% - 32px));
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  column-gap: 28px;
+  align-items: start;
+  width: min(1400px, calc(100% - 32px));
   margin: 0 auto;
   padding: 32px 0 48px;
+}
+
+.topbar {
+  grid-column: 1 / -1;
+}
+
+.start-screen,
+.game-card,
+.end-screen {
+  grid-column: 2;
+  grid-row: 2;
+  min-width: 0;
+}
+
+.instructions {
+  grid-column: 2;
+}
+
+.wizard-dialogue {
+  grid-column: 1;
+  grid-row: 2 / span 2;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
 }
 
 
@@ -135,16 +164,10 @@ h1 {
    ========================================================== */
 
 .wizard-image {
-  position: fixed;
-
-  left: 10px;
-  top: 58%;
-
-  width: min(24vw, 340px);
-  max-height: 72vh;
+  display: block;
+  width: 100%;
+  max-height: 52vh;
   height: auto;
-
-  transform: translateY(-50%);
 
   object-fit: contain;
 
@@ -156,12 +179,7 @@ h1 {
 }
 
 .wizard-credit {
-  position: fixed;
-
-  left: 20px;
-  bottom: 18px;
-
-  width: 340px;
+  width: 100%;
 
   padding: 14px 16px;
 
@@ -447,9 +465,17 @@ h1 {
 .playing-card.revealed {
   transform: rotateY(360deg);
 
+  background-color: #fff;
+  border: 2px solid #fff34d;
+  border-radius: 16px;
+  padding: 6px;
+
+  box-shadow:
+    0 0 8px rgba(255, 243, 77, 0.85),
+    0 0 22px rgba(255, 243, 77, 0.45);
+
   filter:
-    drop-shadow(0 22px 30px rgba(0, 0, 0, 0.35))
-    drop-shadow(0 0 18px rgba(72, 216, 255, 0.18));
+    drop-shadow(0 22px 30px rgba(0, 0, 0, 0.35));
 }
 
 .result-panel {
@@ -571,13 +597,11 @@ h1 {
    ========================================================== */
 
 .feedback {
-  position: fixed;
+  position: relative;
 
-  left: 30px;
-  top: 36px;
-
-  width: 360px;
-  max-width: 31vw;
+  min-width: 0;
+  width: 100%;
+  overflow-wrap: anywhere;
 
   padding: 16px 18px;
 
@@ -599,7 +623,6 @@ h1 {
 
   backdrop-filter: blur(10px);
 
-  z-index: 20;
 }
 
 .feedback::after {
@@ -909,21 +932,35 @@ h1 {
    RESPONSIVE
    ========================================================== */
 
-@media (max-width: 1100px) {
-  .wizard-image {
-    width: min(22vw, 290px);
+@media (min-width: 1101px) {
+  .card-zone {
+    grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
+    gap: 24px;
   }
 
-  .wizard-credit {
-    width: 290px;
-  }
-
-  .feedback {
-    width: 310px;
+  .result-value {
+    font-size: 5rem;
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
+  .app-shell {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .app-shell > * {
+    width: 100%;
+  }
+
+  .wizard-dialogue {
+    order: 1;
+  }
+
+  .instructions {
+    order: 2;
+  }
+
   .wizard-image,
   .wizard-credit {
     display: none;
